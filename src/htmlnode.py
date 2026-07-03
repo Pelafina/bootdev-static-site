@@ -16,5 +16,5 @@ class HTMLNode:
         if self.props == None or self.props == {}:
             return ""
         for value in self.props:
-            html_text += f" {self.props[value].keys()}={self.props[value]}"
+            html_text += f" {value}={self.props[value]}"
         return html_text

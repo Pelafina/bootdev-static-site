@@ -17,6 +17,8 @@ class TestHtmlNode(unittest.TestCase):
         self.assertNotEqual(node.value, node3.value)
         self.assertNotEqual(node.children, node3.children)
         self.assertNotEqual(node.props, node3.props)
+        self.assertEqual(node.prop_to_html(), node2.prop_to_html())
+        self.assertNotEqual(node.prop_to_html(), node3.prop_to_html())
 
 if __name__ == "__main__":
     unittest.main()
