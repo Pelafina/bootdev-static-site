@@ -19,6 +19,12 @@ class HTMLNode:
             html_text += f" {value}={self.props[value]}"
         return html_text
 
+    def __eq__(self, other):
+        if self.tag == other.tag and self.value == other.value and self.children == other.children and self.props == other.props:
+            return True
+        else:
+            return False
+
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
         super().__init__(tag, value, None, props)
