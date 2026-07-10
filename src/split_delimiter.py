@@ -6,20 +6,23 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
             "_" : TextType.ITALIC,
             "`" : TextType.CODE,
             }
-    if old_nodes.text_type != TextType.TEXT:
-        return_list.append(old_nodes)
-        return return_list
-    if delimiter not in old_nodes.text:
-        raise Exception("No valid delimiter found in text")
+    if not isinstance(old_nodes, list):
+        old_nodes = [old_nodes]
 
-    split_text_list = old_nodes.text.split(delimiter)
-    if len(split_text_list) != 3:
-        raise Exception("No closing delimiter found in text")
+    for node in old_nodes:
 
-    return_list = [
-            TextNode(split_text_list[0], TextType.TEXT),
-            TextNode(split_text_list[1], delimiter_to_texttype[delimiter]),
-            TextNode(split_text_list[2], TextType.TEXT)
-            ]
-    
+        if node.text_type != TextType.TEXT:
+            return_list.extend(node)
+        if delimiter not in node.text:
+            raise Exception("No valid delimiter found in text")
+
+        split_text_list = node.text.split(delimiter)
+        if len(split_text_list) != 3:
+            raise Exception("No closing delimiter found in text")
+
+        return_list.extend([
+                TextNode(split_text_list[0], TextType.TEXT),
+                TextNode(split_text_list[1], delimiter_to_texttype[delimiter]),
+                TextNode(split_text_list[2], TextType.TEXT)
+                ])
     return return_list

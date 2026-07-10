@@ -8,6 +8,8 @@ class TextNode:
         self.url = url
 
     def __eq__(self, other):
+        if not isinstance(other, TextNode):
+            return False
         text1 = (self.text, self.text_type, self.url)
         text2 = (other.text, other.text_type, other.url)
         if text1 == text2:
