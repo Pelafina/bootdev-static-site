@@ -36,7 +36,10 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
 
             #If there are no more links in the text but theres still text left add the final piece of text to a node
             if len(extracted_links) == 0 and len(node_text) > 0:
-                new_nodes.append(TextNode(node_text, TextType.LINK))
+                new_nodes.append(TextNode(node_text, TextType.TEXT))
+
+        if len(node_text) > 0:
+            new_nodes.append(TextNode(node_text, TextType.TEXT))
             
 
 
