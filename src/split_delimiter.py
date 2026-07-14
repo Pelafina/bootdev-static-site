@@ -1,28 +1,22 @@
 from textnode import TextNode, TextType  
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
-    return_list = []
-    delimiter_to_texttype = {
-            "**" : TextType.BOLD,
-            "_" : TextType.ITALIC,
-            "`" : TextType.CODE,
-            }
+    new_nodes = []
     if not isinstance(old_nodes, list):
         old_nodes = [old_nodes]
-
-    for node in old_nodes:
-
-        if node.text_type != TextType.TEXT:
-            return_list.extend(node)
-        if delimiter not in node.text:
-            raise Exception("No valid delimiter found in text")
-
-        split_text_list = node.text.split(delimiter)
-        if len(split_text_list) != 3:
-            raise Exception("No closing delimiter found in text")
-
-        return_list.extend([
-                TextNode(split_text_list[0], TextType.TEXT),
-                TextNode(split_text_list[1], delimiter_to_texttype[delimiter]),
-                TextNode(split_text_list[2], TextType.TEXT)
-                ])
-    return return_list
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+        split_nodes = []
+        sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("invalid markdown, formatted section not closed")
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+            if i % 2 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.TEXT))
+            else:
+                split_nodes.append(TextNode(sections[i], text_type))
+        new_nodes.extend(split_nodes)
+    return new_nodes

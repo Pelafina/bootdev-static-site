@@ -24,9 +24,9 @@ class TestDelimiter(unittest.TestCase):
         bold_delimiter_test_node = TextNode("delimited before bold**delimited bold**delimited after bold", TextType.TEXT)
         code_delimiter_test_node = TextNode("delimited before code`delimited code`delimited after code", TextType.TEXT)
 
-        italic_delimiter_test_node_delimited = split_nodes_delimiter(italic_delimiter_test_node, "_", italic_delimiter_test_node.text_type)
-        bold_delimiter_test_node_delimited = split_nodes_delimiter(bold_delimiter_test_node, "**", bold_delimiter_test_node.text_type)
-        code_delimiter_test_node_delimited = split_nodes_delimiter(code_delimiter_test_node, "`", code_delimiter_test_node.text_type)
+        italic_delimiter_test_node_delimited = split_nodes_delimiter(italic_delimiter_test_node, "_", TextType.ITALIC)
+        bold_delimiter_test_node_delimited = split_nodes_delimiter(bold_delimiter_test_node, "**", TextType.BOLD)
+        code_delimiter_test_node_delimited = split_nodes_delimiter(code_delimiter_test_node, "`", TextType.CODE)
 
         self.assertEqual(italic_delimiter_test_node_delimited, italic_delimiter_expected)
         self.assertEqual(bold_delimiter_test_node_delimited, bold_delimiter_expected)

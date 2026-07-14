@@ -4,8 +4,8 @@ from textnode import TextNode, TextType
 
 class TestTextNodeConversion(unittest.TestCase):
     def test_eq(self):
-        text_node = TextNode("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)", TextType.TEXT)
-        converted_text = text_to_textnodes(text_node)
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        converted_text = text_to_textnodes(text)
         expected_output = [
         TextNode("This is ", TextType.TEXT),
         TextNode("text", TextType.BOLD),
