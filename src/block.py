@@ -18,7 +18,8 @@ def block_to_block_type(block: str) -> BlockType:
         return BlockType.QUOTE
     elif block.startswith("-"):
         return BlockType.UNORDERED_LIST
-    elif block.startswith("```\n"):
+    elif block.startswith("```"):
+        print(block)
         if block.split("\n")[-1].startswith("```"):
             return BlockType.CODE
         else:
