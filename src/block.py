@@ -1,4 +1,7 @@
 from enum import Enum
+from htmlnode import HTMLNode, LeafNode, ParentNode 
+from textnode import TextNode
+
 def markdown_to_blocks(markdown: str) -> list[str]:
     raw_blocks = markdown.split("\n\n")
     blocks = []
@@ -40,3 +43,12 @@ class BlockType(Enum):
     UNORDERED_LIST = "unordered list"
     ORDERED_LIST = "ordered list"
 
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    html_blocks = []
+
+    for block in blocks:
+        if block_to_block_type(block) == BlockType.HEADING:
+            html_blocks.append(ParentNode(block)
+        if block_to_block_type(block) == BlockType.PARAGRAPH:
+            html_blocks.append(LeafNode("<p>", block, ))
