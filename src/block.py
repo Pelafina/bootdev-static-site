@@ -1,7 +1,7 @@
 from enum import Enum
 from htmlnode import HTMLNode, LeafNode, ParentNode 
 from textnode import TextNode, text_node_to_html_node
-from inline import text_to_textnode
+from inline import text_to_textnodes
 
 def markdown_to_blocks(markdown: str) -> list[str]:
     raw_blocks = markdown.split("\n\n")
@@ -54,7 +54,8 @@ def markdown_to_html_node(markdown):
         if block_to_block_type(block) == BlockType.PARAGRAPH:
             html_blocks.append(LeafNode("<p>", block, ))
         if block_to_block_type(block) == BlockType.UNORDERED_LIST:
-            children = []
+            leaf_nodes = []
             for line in block:
-                children.append(text_node_to_html_node(text_to_textnode(line)))
-            parent_node = ParentNode
+                leaf_nodes.append(text_node_to_html_node(text_to_textnodes(line)))
+            parent_node = ParentNode()
+
