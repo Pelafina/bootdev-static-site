@@ -1,6 +1,6 @@
 from enum import Enum
 from htmlnode import HTMLNode, LeafNode, ParentNode 
-from textnode import TextNode, text_node_to_html_node
+from textnode import TextNode, text_node_to_html_node, TextType
 from inline import text_to_textnodes
 
 def markdown_to_blocks(markdown: str) -> list[str]:
@@ -23,7 +23,6 @@ def block_to_block_type(block: str) -> BlockType:
     elif block.startswith("-"):
         return BlockType.UNORDERED_LIST
     elif block.startswith("```"):
-        print(block)
         if block.split("\n")[-1].startswith("```"):
             return BlockType.CODE
         else:
@@ -51,18 +50,20 @@ def markdown_to_html_node(markdown) -> list[ParentNode]:
 
     for block in blocks:
         block_type = block_to_block_type(block)
-        if block_type == BlockType.HEADING:
-            block_nodes.append(heading_to_parent_node(block))
-        elif block_type == BlockType.PARAGRAPH:
-            block_nodes.append(ParentNode("p", text_to_leaf_nodes(block)))
-        elif block_type == BlockType.QUOTE:
-            block_nodes.append(ParentNode("blockquote", text_to_leaf_nodes(block)))
-        elif block_type == BlockType.UNORDERED_LIST:
-            block_nodes.append(ParentNode("ul", unordered_list_to_nodes(block)))
-        elif block_type == BlockType.ORDERED_LIST:
-            block_nodes.append(ParentNode("ol", ordered_list_to_nodes(block)))
-        elif block_type == BlockType.CODE:
+        if block_type != BlockType.CODE:
+            text = block.replace("\n", " ")
+        if block_type == BlockType.CODE:
             block_nodes.append(code_to_nodes(block))
+        elif block_type == BlockType.HEADING:
+            block_nodes.append(heading_to_parent_node(text))
+        elif block_type == BlockType.PARAGRAPH:
+            block_nodes.append(ParentNode("p", text_to_leaf_nodes(text)))
+        elif block_type == BlockType.QUOTE:
+            block_nodes.append(ParentNode("blockquote", text_to_leaf_nodes(text)))
+        elif block_type == BlockType.UNORDERED_LIST:
+            block_nodes.append(ParentNode("ul", unordered_list_to_nodes(text)))
+        elif block_type == BlockType.ORDERED_LIST:
+            block_nodes.append(ParentNode("ol", ordered_list_to_nodes(text)))
 
     html_blocks = ParentNode("div", block_nodes)
     return html_blocks 
@@ -96,4 +97,6 @@ def unordered_list_to_nodes(block) -> list[ParentNode]:
     return list_items
 
 def code_to_nodes(block) -> ParentNode:
-    return ParentNode("pre",[LeafNode("code", block)])
+    stripped_block = block.removeprefix("```\n")
+    stripped_block = stripped_block.removesuffix("```")
+    return ParentNode("pre",[text_node_to_html_node(TextNode(stripped_block, TextType.CODE))])
