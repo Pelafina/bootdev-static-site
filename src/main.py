@@ -2,7 +2,9 @@ from textnode import TextNode
 from textnode import TextType
 
 def main():
-    test_node = TextNode("dummy text", TextType.PLAIN)
-    print(test_node)
+    copy_static_to_public()
+
+def copy_static_to_public():
+    #todo everything :)
 
 main()
