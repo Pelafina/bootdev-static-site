@@ -44,18 +44,56 @@ class BlockType(Enum):
     UNORDERED_LIST = "unordered list"
     ORDERED_LIST = "ordered list"
 
-def markdown_to_html_node(markdown):
+def markdown_to_html_node(markdown) -> list[ParentNode]:
     blocks = markdown_to_blocks(markdown)
+    block_nodes = []
     html_blocks = []
 
     for block in blocks:
-        if block_to_block_type(block) == BlockType.HEADING:
-            html_blocks.append(ParentNode(block)
-        if block_to_block_type(block) == BlockType.PARAGRAPH:
-            html_blocks.append(LeafNode("<p>", block, ))
-        if block_to_block_type(block) == BlockType.UNORDERED_LIST:
-            leaf_nodes = []
-            for line in block:
-                leaf_nodes.append(text_node_to_html_node(text_to_textnodes(line)))
-            parent_node = ParentNode()
+        block_type = block_to_block_type(block)
+        if block_type == BlockType.HEADING:
+            block_nodes.append(heading_to_parent_node(block))
+        elif block_type == BlockType.PARAGRAPH:
+            block_nodes.append(ParentNode("p", text_to_leaf_nodes(block)))
+        elif block_type == BlockType.QUOTE:
+            block_nodes.append(ParentNode("blockquote", text_to_leaf_nodes(block)))
+        elif block_type == BlockType.UNORDERED_LIST:
+            block_nodes.append(ParentNode("ul", unordered_list_to_nodes(block)))
+        elif block_type == BlockType.ORDERED_LIST:
+            block_nodes.append(ParentNode("ol", ordered_list_to_nodes(block)))
+        elif block_type == BlockType.CODE:
+            block_nodes.append(code_to_nodes(block))
 
+    html_blocks = ParentNode("div", block_nodes)
+    return html_blocks 
+
+def heading_to_parent_node(block) -> ParentNode:
+    level = 0
+    while block[level] == "#":
+        level += 1
+    if level > 6:
+        raise Exception("Invalid Heading")
+    return ParentNode(f"h{level}", text_to_leaf_nodes(block[level +1:]))
+
+
+def text_to_leaf_nodes(text) -> list[LeafNode]:
+    text_nodes = text_to_textnodes(text)
+    leaf_nodes = []
+    for node in text_nodes:
+        leaf_nodes.append(text_node_to_html_node(node))
+    return leaf_nodes
+
+def ordered_list_to_nodes(block) -> list[ParentNode]:
+    list_items = []
+    for line in block:
+        list_items.append(ParentNode("li",text_to_leaf_nodes(line[line.index(".") + 2])))
+    return list_items
+
+def unordered_list_to_nodes(block) -> list[ParentNode]:
+    list_items = []
+    for line in block:
+        list_items.append(ParentNode("li",text_to_leaf_nodes(line[2:])))
+    return list_items
+
+def code_to_nodes(block) -> ParentNode:
+    return ParentNode("pre",[LeafNode("code", block)])
