@@ -20,6 +20,8 @@ class HTMLNode:
         return html_text
 
     def __eq__(self, other):
+        if other == None:
+            return False
         if self.tag == other.tag and self.value == other.value and self.children == other.children and self.props == other.props:
             return True
         else:

@@ -21,5 +21,3 @@ def copy_file_contents(src_path, dst_path):
             else:
                 os.mkdir(os.path.join(dst_path, file))
                 copy_file_contents(file_path, os.path.join(dst_path, file))
-
-copy_static_to_public()
