@@ -9,7 +9,7 @@ def main():
     base_path = "/"
     if len(sys.argv) > 1:
         base_path = sys.argv[1]
-    copy_static_to_public("./docs")
+    copy_static_to_public("docs")
     content = os.path.abspath("./content")
     template = os.path.abspath("./template.html")
     dest_path = os.path.abspath("./docs")
