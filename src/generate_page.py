@@ -34,9 +34,6 @@ def generate_page(from_path, template_path, dest_path, base_path):
             os.mkdir(path_to_copy_to)
         content_files = os.listdir(content_file_path)
         for file in content_files:
-            print(file)
-            print(repo_path)
-
             source_path = os.path.join(content_file_path, file)
             destination_path = os.path.join(path_to_copy_to, file)
             if os.path.isdir(source_path):
