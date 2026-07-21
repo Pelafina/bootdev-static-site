@@ -18,30 +18,29 @@ def generate_page(from_path, template_path, dest_path):
                 return file.read()
         else:
             raise Exception(f"{path} is not a file")
-    
-    def get_all_content_files(path) -> list[file_path:str]:
-        content_files = os.listdir(path)
-        file_paths = []
-        for file in content_files:
-            if os.isfile(path):
-                file_paths.append(file)
-            else:
-                file_paths.append(get_all_content_files(file))
-        return file_paths
 
-
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
-    content_files = get_all_content_files(from_path)
-    #todo: go through each file present in /content/ and generate folders and indexes in /public/
-    for file in content_files:
+    def convert_markdown_to_html_page(file):
         markdown = read_file_contents(file)
         template = read_file_contents(template_path)
         html_string = markdown_to_html_node(markdown).to_html()
         page_title = extract_title(markdown)
         html_page = template.replace("{{ Title }}", page_title).replace("{{ Content }}", html_string)
+        return html_page
+    
+    def create_html_from_markdown(path_to_copy_to, content_file_path):
+        if not os.path.exists(path_to_copy_to):
+            os.mkdir(path_to_copy_to)
+        content_files = os.listdir(content_file_path)
+        for file in content_files:
+            source_path = os.path.join(content_file_path, file)
+            destination_path = os.path.join(path_to_copy_to, file)
+            if os.path.isdir(source_path):
+                if not os.path.exists(destination_path):
+                    os.makedirs(destination_path, exist_ok=True)
+                create_html_from_markdown(destination_path, source_path)
+            else:
+                with open(os.path.join(path_to_copy_to, f"{os.path.splitext(file)[0]}.html"), "w") as new_file:
+                    new_file.write(convert_markdown_to_html_page(source_path))
 
-        if not os.path.exists(dest_path):
-            os.mkdir(dest_path)
-        with open(os.path.join(dest_path, "index.html"), "w") as file:
-            file.write(html_page)
-
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    create_html_from_markdown(dest_path, from_path)
