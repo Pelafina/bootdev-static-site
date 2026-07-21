@@ -12,6 +12,7 @@ def extract_title(markdown):
         raise Exception("No H1 header found")
 
 def generate_page(from_path, template_path, dest_path, base_path):
+    repo_path = base_path
     def read_file_contents(path):
         if os.path.isfile(path):
             with open(path) as file:
@@ -25,7 +26,7 @@ def generate_page(from_path, template_path, dest_path, base_path):
         html_string = markdown_to_html_node(markdown).to_html()
         page_title = extract_title(markdown)
         html_page = template.replace("{{ Title }}", page_title).replace("{{ Content }}", html_string)
-        html_page = html_page.replace('href="/', f'href="{base_path}').replace('src="/', f'src="{base_path}')
+        html_page = html_page.replace('href="/', f'href="{repo_path}').replace('src="/', f'src="{repo_path}')
         return html_page
     
     def create_html_from_markdown(path_to_copy_to, content_file_path):
@@ -33,6 +34,9 @@ def generate_page(from_path, template_path, dest_path, base_path):
             os.mkdir(path_to_copy_to)
         content_files = os.listdir(content_file_path)
         for file in content_files:
+            print(file)
+            print(repo_path)
+
             source_path = os.path.join(content_file_path, file)
             destination_path = os.path.join(path_to_copy_to, file)
             if os.path.isdir(source_path):

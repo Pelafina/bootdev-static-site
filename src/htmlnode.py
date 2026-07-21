@@ -16,7 +16,7 @@ class HTMLNode:
         if self.props == None or self.props == {}:
             return ""
         for value in self.props:
-            html_text += f" {value}={self.props[value]}"
+            html_text += f' {value}="{self.props[value]}'
         return html_text
 
     def __eq__(self, other):
