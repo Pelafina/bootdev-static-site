@@ -6,7 +6,7 @@ import os
 import sys
 
 def main():
-    base_path = "/TESTING/"
+    base_path = "/TESTING"
     if len(sys.argv) > 1:
         base_path = sys.argv[1]
     copy_static_to_public("docs")
